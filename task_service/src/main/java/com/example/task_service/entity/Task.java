@@ -12,6 +12,10 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "tasks")
+//タスク検索時、削除済みタスクを除外
+@Where(clause = "is_deleted = false")
+//SQL削除命令を論理削除に置き換え
+@SQLDelete(sql = "UPDATE tasks SET is_deleted = true WHERE id = ?")
 public class Task {
 
     @Id
@@ -48,6 +52,9 @@ public class Task {
     protected void update() {
         updatedAt = LocalDateTime.now();
     }
+
+    @Column(nullable = false)
+    private boolean is_deleted = false;
 
     //デフォルトコンストラクタ
     public Task(){

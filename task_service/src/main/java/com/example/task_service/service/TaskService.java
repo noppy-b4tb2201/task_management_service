@@ -70,7 +70,12 @@ public class TaskService {
     }
 
     //タスク削除
+    @Transactional
     public void delete(UUID userId, Long id) {
-        taskRepository.delete(taskRepository.findByUserIdAndId(userId, id));
+
+        Task deletedTask = taskRepository.findByUserIdAndId(userId, id);
+                           .orElseThrow(() -> new TaskNotFoundException("Task NOt Found"))
+
+        taskRepository.delete(deletedTask);
     }
 }
