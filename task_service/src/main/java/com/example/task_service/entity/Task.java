@@ -1,10 +1,10 @@
 package com.example.task_service.entity;
 
 import com.example.task_service.dto.request.TaskUpdateRequestDto;
-import com.example.task_service.dto.response.TaskResponseDto;
 import com.example.task_service.enums.Status;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,10 +12,8 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "tasks")
-//タスク検索時、削除済みタスクを除外
-@Where(clause = "is_deleted = false")
-//SQL削除命令を論理削除に置き換え
-@SQLDelete(sql = "UPDATE tasks SET is_deleted = true WHERE id = ?")
+//論理削除実装、削除フラグカラムを指定
+@SoftDelete(columnName = "is_deleted")
 public class Task {
 
     @Id

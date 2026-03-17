@@ -73,8 +73,8 @@ public class TaskService {
     @Transactional
     public void delete(UUID userId, Long id) {
 
-        Task deletedTask = taskRepository.findByUserIdAndId(userId, id);
-                           .orElseThrow(() -> new TaskNotFoundException("Task NOt Found"))
+        Task deletedTask = taskRepository.findByUserIdAndId(userId, id)
+                           .orElseThrow(() -> new TaskNotFoundException("Task NOt Found"));
 
         taskRepository.delete(deletedTask);
     }
