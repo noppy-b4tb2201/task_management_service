@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tasks")
 //論理削除実装、削除フラグカラムを指定
-@SoftDelete(columnName = "is_deleted")
+@SoftDelete(columnName = "deleted")
 public class Task {
 
     @Id
@@ -52,7 +52,7 @@ public class Task {
     }
 
     @Column(nullable = false)
-    private boolean is_deleted = false;
+    private boolean deleted = false;
 
     //デフォルトコンストラクタ
     public Task(){

@@ -60,22 +60,25 @@ public class TaskService {
 
     //タスク更新
     @Transactional
-    public void updateTaskByUserIdAndId(UUID userId, Long id, TaskUpdateRequestDto request) {
+    public TaskResponseDto updateTaskByUserIdAndId(UUID userId, Long id, TaskUpdateRequestDto request) {
 
         Task willBeUpdateTask = taskRepository.findByUserIdAndId(userId, id)
                                 .orElseThrow(() -> new TaskNotFoundException("Task Not Found"));
 
         willBeUpdateTask.updateTask(request);
 
+        return new TaskResponseDto(willBeUpdateTask);
     }
 
     //タスク削除
     @Transactional
-    public void delete(UUID userId, Long id) {
+    public TaskResponseDto delete(UUID userId, Long id) {
 
         Task deletedTask = taskRepository.findByUserIdAndId(userId, id)
                            .orElseThrow(() -> new TaskNotFoundException("Task NOt Found"));
 
         taskRepository.delete(deletedTask);
+
+        return new TaskResponseDto(deletedTask);
     }
 }
