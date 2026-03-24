@@ -18,9 +18,9 @@ public class GlobalExceptionHandler {
     }
 
     //サービス層からのエラー
-    @ExceptionHandler(TaskAlreadyexistException.class)
+    @ExceptionHandler(TaskAlreadyexistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public CommonResponseDto<Void> alreadyExist(TaskAlreadyexistException e) {
+    public CommonResponseDto<Void> alreadyExist(TaskAlreadyexistsException e) {
         return CommonResponseDto.error(e.getMessage());
     }
 
@@ -34,5 +34,12 @@ public class GlobalExceptionHandler {
                           .getDefaultMessage();
 
         return CommonResponseDto.error(message);
+    }
+
+    //想定外のエラーをキャッチする
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CommonResponseDto<Void> handleAll(Exception e) {
+        return CommonResponseDto.error("Internal Server Error");
     }
 }

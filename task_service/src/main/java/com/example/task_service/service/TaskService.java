@@ -4,14 +4,13 @@ import com.example.task_service.dto.request.TaskCreateRequestDto;
 import com.example.task_service.dto.request.TaskUpdateRequestDto;
 import com.example.task_service.dto.response.TaskResponseDto;
 import com.example.task_service.entity.Task;
-import com.example.task_service.exception.TaskAlreadyexistException;
+import com.example.task_service.exception.TaskAlreadyexistsException;
 import com.example.task_service.exception.TaskNotFoundException;
 import com.example.task_service.repository.TaskRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,8 +26,8 @@ public class TaskService {
     @Transactional
     public TaskResponseDto create(UUID userId, TaskCreateRequestDto request) {
 
-        if (taskRepository.existByUserIdAndTitle(userId, request.getTitle())) {
-            throw new TaskAlreadyexistException("Task Already exist");
+        if (taskRepository.existsByUserIdAndTitle(userId, request.getTitle())) {
+            throw new TaskAlreadyexistsException("Task Already exist");
         }
 
         Task task = new Task();
@@ -75,7 +74,7 @@ public class TaskService {
     public TaskResponseDto delete(UUID userId, Long id) {
 
         Task deletedTask = taskRepository.findByUserIdAndId(userId, id)
-                           .orElseThrow(() -> new TaskNotFoundException("Task NOt Found"));
+                           .orElseThrow(() -> new TaskNotFoundException("Task Not Found"));
 
         taskRepository.delete(deletedTask);
 

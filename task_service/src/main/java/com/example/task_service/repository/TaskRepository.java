@@ -1,7 +1,6 @@
 package com.example.task_service.repository;
 
 import com.example.task_service.entity.Task;
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,5 +13,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findByUserIdAndId(UUID userId, Long id);
 
-    boolean existByUserIdAndTitle(UUID userId, String title);
+    boolean existsByUserIdAndTitle(UUID userId, String title);
 }

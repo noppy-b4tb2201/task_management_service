@@ -4,7 +4,6 @@ import com.example.task_service.dto.request.TaskCreateRequestDto;
 import com.example.task_service.dto.request.TaskUpdateRequestDto;
 import com.example.task_service.dto.response.CommonResponseDto;
 import com.example.task_service.dto.response.TaskResponseDto;
-import com.example.task_service.entity.Task;
 import com.example.task_service.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class TaskController {
 
     //タスク部分検索コントローラー
     @GetMapping(value = "/search/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto<TaskResponseDto> search(@AuthenticationPrincipal UUID userId, @PathVariable Long id) {
         TaskResponseDto taskResponseDto = taskService.findById(userId, id);
 
@@ -44,7 +43,7 @@ public class TaskController {
 
     //タスク全件検索コントローラー
     @GetMapping(value = "/search")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto<List<TaskResponseDto>> searchAll(@AuthenticationPrincipal UUID userId) {
         List<TaskResponseDto> taskResponseDto = taskService.findByUserId(userId);
 
