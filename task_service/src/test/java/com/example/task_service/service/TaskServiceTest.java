@@ -3,6 +3,7 @@ package com.example.task_service.service;
 import com.example.task_service.dto.request.TaskCreateRequestDto;
 import com.example.task_service.dto.response.TaskResponseDto;
 import com.example.task_service.entity.Task;
+import com.example.task_service.exception.TaskAlreadyexistsException;
 import com.example.task_service.repository.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,5 +49,25 @@ public class TaskServiceTest {
         assertNotNull(result);
         assertEquals("Title", result.getTitle());
         verify(taskRepository, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("Task Already Exists")
+    void create_failed() {
+        //Arrange
+        UUID userId = UUID.randomUUID();
+        TaskCreateRequestDto request = new TaskCreateRequestDto();
+        request.setTitle("Title");
+        request.setDescription("Description");
+
+        when(taskRepository.existsByUserIdAndTitle(userId, "Title")).thenReturn(true);
+
+        //Act&Assert
+        assertThrows(TaskAlreadyexistsException.class, () -> {
+            taskService.create(userId, request);
+        });
+
+        verify(taskRepository, times(0)).save(any());
+
     }
 }
