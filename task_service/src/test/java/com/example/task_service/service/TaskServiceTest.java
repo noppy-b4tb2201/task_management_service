@@ -4,6 +4,7 @@ import com.example.task_service.dto.request.TaskCreateRequestDto;
 import com.example.task_service.dto.response.TaskResponseDto;
 import com.example.task_service.entity.Task;
 import com.example.task_service.exception.TaskAlreadyexistsException;
+import com.example.task_service.exception.TaskNotFoundException;
 import com.example.task_service.repository.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +55,7 @@ public class TaskServiceTest {
 
     @Test
     @DisplayName("Task Already Exists")
-    void create_failed() {
+    void create_Failed() {
         //Arrange
         UUID userId = UUID.randomUUID();
         TaskCreateRequestDto request = new TaskCreateRequestDto();
@@ -69,5 +71,44 @@ public class TaskServiceTest {
 
         verify(taskRepository, times(0)).save(any());
 
+    }
+
+    @Test
+    @DisplayName("Task Found")
+    void findById_Success() {
+
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.of(task));
+        TaskResponseDto response = taskService.findById(task.getUserId(), task.getId());
+
+        assertNotNull(response);
+
+        verify(taskRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("Task Not Found")
+    void findbyId_Failed() {
+
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.findById(task.getUserId(), task.getId());
+        });
+
+        verify(taskRepository, times(0)).save(any());
     }
 }
