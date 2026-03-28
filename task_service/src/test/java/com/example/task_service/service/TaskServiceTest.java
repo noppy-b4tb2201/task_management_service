@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -111,4 +112,38 @@ public class TaskServiceTest {
 
         verify(taskRepository, times(0)).save(any());
     }
+
+    @Test
+    @DisplayName("Task Found")
+    void findByUserId_Success() {
+        UUID userId = UUID.randomUUID();
+
+        Task task = new Task();
+        task.setUserId(userId);
+
+        when(taskRepository.findByUserId(userId)).thenReturn(List.of(task));
+
+        List<TaskResponseDto> response = taskService.findByUserId(task.getUserId());
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+    }
+
+    @Test
+    @DisplayName("Task Not Found")
+    void findByUserId_failed() {
+        UUID userId = UUID.randomUUID();
+
+        Task task = new Task();
+        task.setUserId(userId);
+
+        when(taskRepository.findByUserId(userId)).thenReturn(List.of());
+
+        List<TaskResponseDto> response = taskService.findByUserId(task.getUserId());
+
+        assertEquals(0, response.size());
+        verify(taskRepository, times(0)).save(any());
+
+    }
+
 }
