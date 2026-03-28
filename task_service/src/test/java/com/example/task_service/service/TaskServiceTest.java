@@ -1,8 +1,10 @@
 package com.example.task_service.service;
 
 import com.example.task_service.dto.request.TaskCreateRequestDto;
+import com.example.task_service.dto.request.TaskUpdateRequestDto;
 import com.example.task_service.dto.response.TaskResponseDto;
 import com.example.task_service.entity.Task;
+import com.example.task_service.enums.Status;
 import com.example.task_service.exception.TaskAlreadyexistsException;
 import com.example.task_service.exception.TaskNotFoundException;
 import com.example.task_service.repository.TaskRepository;
@@ -131,7 +133,7 @@ public class TaskServiceTest {
 
     @Test
     @DisplayName("Task Not Found")
-    void findByUserId_failed() {
+    void findByUserId_Failed() {
         UUID userId = UUID.randomUUID();
 
         Task task = new Task();
@@ -142,6 +144,54 @@ public class TaskServiceTest {
         List<TaskResponseDto> response = taskService.findByUserId(task.getUserId());
 
         assertEquals(0, response.size());
+        verify(taskRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    @DisplayName("Task Updated")
+    void updateTaskByUserIdAndId_Success() {
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        TaskUpdateRequestDto request = new TaskUpdateRequestDto();
+        request.setStatus(Status.DONE);
+        request.setDescription("description");
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.of(task));
+
+        TaskResponseDto response = taskService.updateTaskByUserIdAndId(userId, id, request);
+
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Status.DONE);
+        assertEquals(response.getDescription(), "description");
+        verify(taskRepository, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("Task Not Updated")
+    void updateTaskByUserIdAndId_Failed() {
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        TaskUpdateRequestDto request = new TaskUpdateRequestDto();
+        request.setStatus(Status.DONE);
+        request.setDescription("description");
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.updateTaskByUserIdAndId(userId, id, request);
+        });
+
         verify(taskRepository, times(0)).save(any());
 
     }
