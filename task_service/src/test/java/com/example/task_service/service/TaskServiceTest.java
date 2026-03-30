@@ -196,4 +196,24 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Task Deleted")
+    void delete_Success() {
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.of(task));
+
+        TaskResponseDto response = taskService.delete(userId, id);
+
+        assertNotNull(response);
+        assertEquals(true, task.isDeleted());
+        verify(taskRepository, times(1)).save(any());
+
+    }
+
 }
