@@ -211,9 +211,31 @@ public class TaskServiceTest {
         TaskResponseDto response = taskService.delete(userId, id);
 
         assertNotNull(response);
-        assertEquals(true, task.isDeleted());
-        verify(taskRepository, times(1)).save(any());
 
+        //@SoftDeleteのため、entityの値は更新されない
+        //assertEquals(true, task.isDeleted());
+
+        verify(taskRepository, times(1)).delete(any());
+
+    }
+
+    @Test
+    @DisplayName("Task Not Deleted")
+    void delete_Failed() {
+        UUID userId = UUID.randomUUID();
+        Long id = 1L;
+
+        Task task = new Task();
+        task.setUserId(userId);
+        task.setId(id);
+
+        when(taskRepository.findByUserIdAndId(userId, id)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.delete(userId, id);
+        });
+
+        verify(taskRepository, times(0)).delete(any());
     }
 
 }
