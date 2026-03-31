@@ -10,6 +10,7 @@ import com.example.auth_service.repository.UserRepository;
 import com.example.auth_service.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -25,6 +26,7 @@ public class AuthService {
     }
 
     //ユーザー登録
+    @Transactional
     public void register(RegisterRequestDto request) {
 
         //email重複チェック
@@ -34,13 +36,11 @@ public class AuthService {
         }
 
         //userエンティティに値をDTOから詰め替える、その際パスワードはハッシュ化する
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-
-        //パスワードハッシュ化
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPasswordHash(hashedPassword);
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .build();
 
         userRepository.save(user);
 

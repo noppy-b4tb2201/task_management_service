@@ -2,6 +2,7 @@ package com.example.auth_service.entity;
 
 import com.example.auth_service.enums.Role;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.UUID;
 //Javaクラスをデータベースのテーブルと対応づける
 @Data
 @Entity
+@Builder
 //データベーステーブル名を決定する
 @Table(name="users")
 public class User {
