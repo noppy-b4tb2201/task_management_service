@@ -156,7 +156,7 @@ public class TaskServiceTest {
         UUID userId = UUID.randomUUID();
         Long id = 1L;
 
-        Task task = new Task();
+        Task task = spy(new Task());
         task.setUserId(userId);
         task.setId(id);
 
@@ -171,7 +171,7 @@ public class TaskServiceTest {
         assertNotNull(response);
         assertEquals(response.getStatus(), Status.DONE);
         assertEquals(response.getDescription(), "description");
-        verify(taskRepository, times(1)).save(any());
+        verify(task, times(1)).updateTask(any());
     }
 
     @Test
