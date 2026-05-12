@@ -12,8 +12,6 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "tasks")
-//論理削除実装、削除フラグカラムを指定
-@SoftDelete(columnName = "deleted")
 public class Task {
 
     @Id
@@ -40,6 +38,9 @@ public class Task {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @PrePersist
     protected void create() {
         createdAt = LocalDateTime.now();
@@ -50,9 +51,6 @@ public class Task {
     protected void update() {
         updatedAt = LocalDateTime.now();
     }
-
-    @Column(nullable = false)
-    private boolean deleted = false;
 
     //デフォルトコンストラクタ
     public Task(){

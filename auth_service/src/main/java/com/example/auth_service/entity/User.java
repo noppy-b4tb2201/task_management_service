@@ -2,8 +2,10 @@ package com.example.auth_service.entity;
 
 import com.example.auth_service.enums.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Data
 @Entity
 @Builder
+@NoArgsConstructor // ← これを追加（引数なしコンストラクタ）
+@AllArgsConstructor // ← @Builderと@NoArgsConstructorを併用する際に必要
 //データベーステーブル名を決定する
 @Table(name="users")
 public class User {
