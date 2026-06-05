@@ -4,7 +4,6 @@ import com.example.task_service.dto.request.TaskUpdateRequestDto;
 import com.example.task_service.enums.Status;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.SoftDelete;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
